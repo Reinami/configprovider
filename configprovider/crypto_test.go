@@ -5,37 +5,41 @@ import (
 	"testing"
 )
 
-// MockDecrypter for testing
+// Mocks
 type MockDecrypter struct {
-	Fail   bool
-	Output string
+	ShouldFail     bool
+	ExpectedOutput string
 }
 
 func (m *MockDecrypter) Decrypt(cipherText string) (string, error) {
-	if m.Fail {
+	if m.ShouldFail {
 		return "", errors.New("mock decryption error")
 	}
-	return m.Output, nil
+	return m.ExpectedOutput, nil
 }
 
+// Tests
+
 func TestDecryptValue_NoDecrypter(t *testing.T) {
-	_, err := decryptValue("SECRET", "ENC:xyz", nil)
+	_, err := decryptValue("SECRET", "key", nil)
 	if err == nil || err.Error() != "no decrypter is provided" {
 		t.Errorf("expected 'no decrypter is provided', got: %v", err)
 	}
 }
 
 func TestDecryptValue_DecryptionFails(t *testing.T) {
-	mock := &MockDecrypter{Fail: true}
-	_, err := decryptValue("SECRET", "ENC:xyz", mock)
+	mock := &MockDecrypter{ShouldFail: true}
+
+	_, err := decryptValue("SECRET", "key", mock)
 	if err == nil {
 		t.Errorf("expected wrapped decryption error, got: %v", err)
 	}
 }
 
 func TestDecryptValue_Success(t *testing.T) {
-	mock := &MockDecrypter{Output: "decrypted"}
-	plain, err := decryptValue("SECRET", "ENC:xyz", mock)
+	mock := &MockDecrypter{ExpectedOutput: "decrypted"}
+
+	plain, err := decryptValue("SECRET", "key", mock)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

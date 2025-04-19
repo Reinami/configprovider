@@ -1,4 +1,4 @@
-package decrypters
+package cryptography
 
 import (
 	"crypto/aes"
@@ -11,21 +11,21 @@ import (
 )
 
 type AESGCMCrypto struct {
-	Key []byte
+	key []byte
 }
 
-func NewAESGCMCrypto(key []byte) *AESGCMCrypto {
+func NewAESGCMCrypto(key string) *AESGCMCrypto {
 	if len(key) != 32 {
-		panic("AESGCMDecrypter: Key must be exactly 32 bytes (AES-256)")
+		panic("AESGCMDecrypter: key must be exactly 32 bytes (AES-256)")
 	}
 
 	return &AESGCMCrypto{
-		Key: key,
+		key: []byte(key),
 	}
 }
 
 func (c *AESGCMCrypto) Encrypt(plainText string) (string, error) {
-	aesCipher, err := aes.NewCipher(c.Key)
+	aesCipher, err := aes.NewCipher(c.key)
 	if err != nil {
 		return "", fmt.Errorf("failed to create aes cipher: %w", err)
 	}
@@ -53,7 +53,7 @@ func (c *AESGCMCrypto) Decrypt(base64CipherText string) (string, error) {
 		return "", fmt.Errorf("base64 decode failed: %w", err)
 	}
 
-	aesCipher, err := aes.NewCipher(c.Key)
+	aesCipher, err := aes.NewCipher(c.key)
 	if err != nil {
 		return "", fmt.Errorf("failed to create aes cipher: %w", err)
 	}

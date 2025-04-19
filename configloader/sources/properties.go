@@ -1,4 +1,4 @@
-package configtypes
+package sources
 
 import (
 	"bufio"

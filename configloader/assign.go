@@ -8,7 +8,7 @@ import (
 func assignFields(target reflect.Value, source Source, cryptoAlgo CryptoAlgorithm) error {
 	targetType := target.Type()
 
-	for i := 0; i < target.NumField(); i++ {
+	for i := range target.NumField() {
 		var finalValue string
 
 		field := target.Field(i)

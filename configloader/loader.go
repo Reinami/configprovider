@@ -5,6 +5,10 @@ import (
 	"reflect"
 )
 
+type Source interface {
+	Get(key string) (string, bool)
+}
+
 func Load(config any, source Source, cryptoAlgo CryptoAlgorithm) error {
 	reflectValue := reflect.ValueOf(config)
 

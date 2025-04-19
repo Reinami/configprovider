@@ -21,7 +21,7 @@ func main() {
 	// This should not be hard coded or its not secure!
 	const secretKey string = "12345678901234567890123456789012"
 
-	err := configloader.NewConfigProvider().
+	err := configprovider.NewConfigProvider().
 		FromPropertiesFile("./testconfig.properties").
 		WithAESGCMDecrypter(secretKey).
 		Load(&config)

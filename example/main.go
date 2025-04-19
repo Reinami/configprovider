@@ -2,11 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/Reinami/configloader"
-	"github.com/Reinami/configloader/cryptography"
-	"github.com/Reinami/configloader/sources"
 )
 
 type AppConfig struct {
@@ -21,18 +18,16 @@ type AppConfig struct {
 func main() {
 	var config AppConfig
 
-	source, err := sources.FromPropertiesFile("./testconfig.properties")
-	if err != nil {
-		log.Fatalf("failed to load config file: %v", err)
-	}
-
 	// This should not be hard coded or its not secure!
 	const secretKey string = "12345678901234567890123456789012"
 
-	crypto := cryptography.NewAESGCMCrypto(secretKey)
-	err = configloader.Load(&config, source, crypto)
+	err := configloader.NewConfigProvider().
+		FromPropertiesFile("./testconfig.properties").
+		WithAESGCMDecrypter(secretKey).
+		Load(&config)
+
 	if err != nil {
-		log.Fatalf("failed to load config: %v", err)
+		panic(err)
 	}
 
 	fmt.Println("Loaded Config:")

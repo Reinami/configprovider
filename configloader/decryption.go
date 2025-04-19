@@ -2,69 +2,25 @@ package configloader
 
 import (
 	"fmt"
-	"reflect"
 )
 
-type CryptoAlgorithm interface {
+type Encrypter interface {
 	Encrypt(plainText string) (string, error)
+}
+
+type Decrypter interface {
 	Decrypt(cipherText string) (string, error)
 }
 
-func decryptValue(key string, value string, cryptoAlgo CryptoAlgorithm) (string, error) {
-	if cryptoAlgo == nil {
-		return "", fmt.Errorf("field %s is marked as encrypted but no cryptoAlgorithm is provided", key)
+func decryptValue(key string, value string, decrypter Decrypter) (string, error) {
+	if decrypter == nil {
+		return "", fmt.Errorf("no decrypter is provided")
 	}
 
-	plainText, err := cryptoAlgo.Decrypt(value)
+	plainText, err := decrypter.Decrypt(value)
 	if err != nil {
 		return "", fmt.Errorf("decryption failed for %s: %w", key, err)
 	}
 
 	return plainText, nil
-}
-
-func assignFields(target reflect.Value, source Source, cryptoAlgo CryptoAlgorithm) error {
-	targetType := target.Type()
-
-	for i := range target.NumField() {
-		var finalValue string
-
-		field := target.Field(i)
-		fieldType := targetType.Field(i)
-
-		if !field.CanSet() {
-			continue
-		}
-
-		tagOpts := parseTag(fieldType)
-		if tagOpts.Key == "" {
-			continue
-		}
-
-		finalValue, found := source.Get(tagOpts.Key)
-		if !found {
-			if tagOpts.Default != "" {
-				finalValue = tagOpts.Default
-			} else if tagOpts.IsRequired {
-				return fmt.Errorf("required key %s is missing", tagOpts.Key)
-			} else {
-				continue
-			}
-		}
-
-		if tagOpts.IsEncrypted {
-			decryptedValue, err := decryptValue(tagOpts.Key, finalValue, cryptoAlgo)
-			if err != nil {
-				return err
-			}
-			finalValue = decryptedValue
-		}
-
-		err := parseAndSetValue(field, finalValue)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }

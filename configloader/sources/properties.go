@@ -11,7 +11,7 @@ type PropertiesSource struct {
 	values map[string]string
 }
 
-func FromPropertiesFile(path string) (*PropertiesSource, error) {
+func NewPropertiesFileSource(path string) (*PropertiesSource, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err

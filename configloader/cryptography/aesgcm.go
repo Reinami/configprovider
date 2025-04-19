@@ -14,14 +14,14 @@ type AESGCMCrypto struct {
 	key []byte
 }
 
-func NewAESGCMCrypto(key string) *AESGCMCrypto {
+func NewAESGCMCrypto(key string) (*AESGCMCrypto, error) {
 	if len(key) != 32 {
-		panic("AESGCMDecrypter: key must be exactly 32 bytes (AES-256)")
+		return &AESGCMCrypto{}, errors.New("AESGCMDecrypter: key must be exactly 32 bytes (AES-256)")
 	}
 
 	return &AESGCMCrypto{
 		key: []byte(key),
-	}
+	}, nil
 }
 
 func (c *AESGCMCrypto) Encrypt(plainText string) (string, error) {

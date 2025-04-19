@@ -6,12 +6,12 @@ import (
 )
 
 // Mocks
-type MockDecrypter struct {
+type mockCryptoTestDecrypter struct {
 	ShouldFail     bool
 	ExpectedOutput string
 }
 
-func (m *MockDecrypter) Decrypt(cipherText string) (string, error) {
+func (m *mockCryptoTestDecrypter) Decrypt(cipherText string) (string, error) {
 	if m.ShouldFail {
 		return "", errors.New("mock decryption error")
 	}
@@ -28,7 +28,7 @@ func TestDecryptValue_NoDecrypter(t *testing.T) {
 }
 
 func TestDecryptValue_DecryptionFails(t *testing.T) {
-	mock := &MockDecrypter{ShouldFail: true}
+	mock := &mockCryptoTestDecrypter{ShouldFail: true}
 
 	_, err := decryptValue("SECRET", "key", mock)
 	if err == nil {
@@ -37,7 +37,7 @@ func TestDecryptValue_DecryptionFails(t *testing.T) {
 }
 
 func TestDecryptValue_Success(t *testing.T) {
-	mock := &MockDecrypter{ExpectedOutput: "decrypted"}
+	mock := &mockCryptoTestDecrypter{ExpectedOutput: "decrypted"}
 
 	plain, err := decryptValue("SECRET", "key", mock)
 	if err != nil {

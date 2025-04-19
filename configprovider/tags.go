@@ -1,4 +1,4 @@
-package configloader
+package configprovider
 
 import (
 	"reflect"

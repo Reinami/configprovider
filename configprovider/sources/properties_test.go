@@ -20,7 +20,7 @@ func writeTmpProperties(t *testing.T, content string) string {
 	return filePath
 }
 
-func TestFromPropertiesFileValid(t *testing.T) {
+func TestNewPropertiesFileSource_FileValid(t *testing.T) {
 	content := `
 # This is a comment
 DEBUG=true
@@ -33,7 +33,7 @@ SECRET = super-secret
 
 	path := writeTmpProperties(t, content)
 
-	source, err := FromPropertiesFile(path)
+	source, err := NewPropertiesFileSource(path)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
@@ -57,7 +57,7 @@ SECRET = super-secret
 	}
 }
 
-func TestFromPropertiesFileMalformedLine(t *testing.T) {
+func TestNewPropertiesFileSource_MalformedLine(t *testing.T) {
 	content := `
 GOOD=okay
 BAD_LINE_NO_EQUALS
@@ -65,14 +65,14 @@ ANOTHER=entry
 `
 	path := writeTmpProperties(t, content)
 
-	_, err := FromPropertiesFile(path)
+	_, err := NewPropertiesFileSource(path)
 	if err == nil {
 		t.Fatalf("expected error for malformed line, got none")
 	}
 }
 
-func TestFromPropertiesFileNotFound(t *testing.T) {
-	_, err := FromPropertiesFile("nonexistent/path.properties")
+func TestNewPropertiesFileSource_NotFound(t *testing.T) {
+	_, err := NewPropertiesFileSource("nonexistent/path.properties")
 	if err == nil {
 		t.Fatalf("expected file not found error, got none")
 	}

@@ -1,1 +1,1 @@
-package configloader
+package configprovider

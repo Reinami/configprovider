@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/Reinami/configloader"
+	"github.com/Reinami/configprovider"
 )
 
 type AppConfig struct {

@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Reinami/configloader/cryptography"
-	"github.com/Reinami/configloader/sources"
+	"github.com/Reinami/configprovider/cryptography"
+	"github.com/Reinami/configprovider/sources"
 )
 
 type Source interface {

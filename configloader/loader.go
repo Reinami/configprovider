@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func Load(config any, source Source, decrypter Decrypter) error {
+func Load(config any, source Source, cryptoAlgo CryptoAlgorithm) error {
 	reflectValue := reflect.ValueOf(config)
 
 	if reflectValue.Kind() != reflect.Ptr || reflectValue.Elem().Kind() != reflect.Struct {
@@ -13,5 +13,5 @@ func Load(config any, source Source, decrypter Decrypter) error {
 	}
 
 	structValue := reflectValue.Elem()
-	return assignFields(structValue, source, decrypter)
+	return assignFields(structValue, source, cryptoAlgo)
 }

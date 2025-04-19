@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func assignFields(target reflect.Value, source Source, decrypter Decrypter) error {
+func assignFields(target reflect.Value, source Source, cryptoAlgo CryptoAlgorithm) error {
 	targetType := target.Type()
 
 	for i := 0; i < target.NumField(); i++ {
@@ -35,7 +35,7 @@ func assignFields(target reflect.Value, source Source, decrypter Decrypter) erro
 		}
 
 		if tagOpts.IsEncrypted {
-			decryptedValue, err := decryptValue(tagOpts.Key, finalValue, decrypter)
+			decryptedValue, err := decryptValue(tagOpts.Key, finalValue, cryptoAlgo)
 			if err != nil {
 				return err
 			}

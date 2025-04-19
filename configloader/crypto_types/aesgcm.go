@@ -3,32 +3,57 @@ package decrypters
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 )
 
-type AESGCMDecrypter struct {
+type AESGCMCrypto struct {
 	Key []byte
 }
 
-func NewAESGCMDecrypter(key []byte) *AESGCMDecrypter {
+func NewAESGCMCrypto(key []byte) *AESGCMCrypto {
 	if len(key) != 32 {
 		panic("AESGCMDecrypter: Key must be exactly 32 bytes (AES-256)")
 	}
 
-	return &AESGCMDecrypter{
+	return &AESGCMCrypto{
 		Key: key,
 	}
 }
 
-func (d *AESGCMDecrypter) Decrypt(base64CipherText string) (string, error) {
+func (c *AESGCMCrypto) Encrypt(plainText string) (string, error) {
+	aesCipher, err := aes.NewCipher(c.Key)
+	if err != nil {
+		return "", fmt.Errorf("failed to create aes cipher: %w", err)
+	}
+
+	gcm, err := cipher.NewGCM(aesCipher)
+	if err != nil {
+		return "", fmt.Errorf("failed to created gcm: %w", err)
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+	_, err = io.ReadFull(rand.Reader, nonce)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate nonce: %w", err)
+	}
+
+	cipherText := gcm.Seal(nil, nonce, []byte(plainText), nil)
+	final := append(nonce, cipherText...)
+
+	return base64.StdEncoding.EncodeToString(final), nil
+}
+
+func (c *AESGCMCrypto) Decrypt(base64CipherText string) (string, error) {
 	cipherData, err := base64.StdEncoding.DecodeString(base64CipherText)
 	if err != nil {
 		return "", fmt.Errorf("base64 decode failed: %w", err)
 	}
 
-	aesCipher, err := aes.NewCipher(d.Key)
+	aesCipher, err := aes.NewCipher(c.Key)
 	if err != nil {
 		return "", fmt.Errorf("failed to create aes cipher: %w", err)
 	}

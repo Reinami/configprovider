@@ -1,4 +1,4 @@
-package configprovider
+package provider
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Reinami/configprovider/cryptography"
-	"github.com/Reinami/configprovider/sources"
+	"github.com/Reinami/configprovider/pkg/cryptography"
+	"github.com/Reinami/configprovider/pkg/sources"
 )
 
 type Source interface {

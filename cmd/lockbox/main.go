@@ -4,9 +4,17 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
-	"github.com/Reinami/configprovider/cryptography"
+	"github.com/Reinami/configprovider/pkg/cryptography"
+	"github.com/Reinami/configprovider/pkg/provider"
 )
+
+const version = "v0.1.0"
+
+var supportedAlgorithms = map[string]string{
+	"aesgcm": "AES-GCM encryption with 256-bit key",
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -18,11 +26,9 @@ func main() {
 
 	fs := flag.NewFlagSet(command, flag.ExitOnError)
 
-	var listAlgo, algorithm, secret, value string
-	fs.StringVar(&listAlgo, "l", "", "Lists all available algorithms")
-	fs.StringVar(&listAlgo, "list-algorithms", "", "Lists all available algorithms")
-	fs.StringVar(&algorithm, "c", "", "Crypto Algorithm (run --l to see a list of supported Algorithms")
-	fs.StringVar(&algorithm, "crypto-algorithm", "", "Crypto Algorithm (run --l to see a list of supported Algorithms")
+	var algorithm, secret, value string
+	fs.StringVar(&algorithm, "c", "", "Crypto Algorithm (run --l to see a list of supported Algorithms)")
+	fs.StringVar(&algorithm, "crypto-algorithm", "", "Crypto Algorithm (run --l to see a list of supported Algorithms)")
 	fs.StringVar(&secret, "s", "", "Your secret key for encryption/decryption")
 	fs.StringVar(&secret, "secret-key", "", "Your secret key for encryption/decryption")
 	fs.StringVar(&value, "v", "", "Value to encrypt/decrypt")
@@ -36,11 +42,12 @@ func main() {
 	args := fs.Args()
 	if len(args) >= 2 {
 		if secret == "" {
-			secret = args[0]
+			secret = strings.TrimSpace(args[0])
 		}
 
 		if value == "" {
-			value = args[1]
+
+			value = strings.TrimSpace(args[1])
 		}
 	}
 
@@ -57,8 +64,12 @@ func main() {
 		decryptSecret(algorithm, secret, value)
 	case "--help", "-h", "help":
 		showHelp()
+	case "--l", "--list-algorithms":
+		showAlgorithms()
+	case "--version":
+		fmt.Println("lockbox version", version)
 	default:
-		fmt.Println("unknown command %v", command)
+		fmt.Println("unknown command ", command)
 		showHelp()
 	}
 }
@@ -95,13 +106,13 @@ func decryptSecret(algorithm string, secret string, value string) {
 	fmt.Println(decryptedValue)
 }
 
-func getAlgorithm(algorithm string, secret string) (cryptography.CryptoAlgorithm, error) {
+func getAlgorithm(algorithm string, secret string) (provider.CryptoAlgorithm, error) {
 	switch algorithm {
 	case "aesgcm":
 		return cryptography.NewAESGCMCrypto(secret)
 	}
 
-	return nil, fmt.Errorf("unsupported algorthim, %v", algorithm)
+	return nil, fmt.Errorf("unsupported algorithm, %v", algorithm)
 }
 
 func showHelp() {
@@ -117,13 +128,21 @@ Options:
   --s, --secret-key         Optional. Secret key (can be passed positionally)
   --v, --value              Optional. Value to encrypt/decrypt (can be passed positionally)
   --l, --list-algorithms    Optional. Will display a list of currently supported algorithms
+  --version                 Optional. Displays current version of lockbox
 
 Examples:
   lockbox encrypt --c=aesgcm mysecret myvalue
   lockbox decrypt --c=aesgcm mysecret myencryptedvalue`)
 }
 
+func showAlgorithms() {
+	fmt.Println("Supported Algorithms:")
+	for name, desc := range supportedAlgorithms {
+		fmt.Printf("  %-10s - %s\n", name, desc)
+	}
+}
+
 func printErr(err error) {
-	fmt.Println("%v", err)
+	fmt.Println(err)
 	showHelp()
 }

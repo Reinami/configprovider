@@ -8,7 +8,7 @@ Supports `.properties` files, encrypted fields, and custom source + crypto integ
 ## ✨ Features
 
 - Struct-based configuration loading
-- `.properties` file support
+- currently has `.properties` file support
 - Optional field defaults, required fields, and encryption
 - Extendable via custom sources or decryption strategies
 - Optional CLI helper: [`lockbox`](#-lockbox-cli-optional)

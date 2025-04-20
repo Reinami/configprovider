@@ -8,7 +8,7 @@ Supports `.properties` files, encrypted fields, and custom source + crypto integ
 ## ✨ Features
 
 - Struct-based configuration loading
-- `.properties` file support
+- currently has `.properties` file support
 - Optional field defaults, required fields, and encryption
 - Extendable via custom sources or decryption strategies
 - Optional CLI helper: [`lockbox`](#-lockbox-cli-optional)
@@ -114,10 +114,10 @@ go install github.com/Reinami/configprovider/cmd/lockbox@latest
 
 ```bash
 # Encrypt
-lockbox encrypt --c=aesgcm mysecret "mysecretvalue"
+lockbox encrypt --c=aesgcm mysecret mysecretvalue
 
 # Decrypt
-lockbox decrypt --c=aesgcm mysecret "ciphertext"
+lockbox decrypt --c=aesgcm mysecret ciphertext
 
 # Show available algorithms
 lockbox --list-algorithms

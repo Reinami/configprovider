@@ -1,9 +1,9 @@
-package configprovider_test
+package provider_test
 
 import (
 	"testing"
 
-	"github.com/Reinami/configprovider"
+	"github.com/Reinami/configprovider/pkg/provider"
 )
 
 type mockSource map[string]string
@@ -51,7 +51,7 @@ func TestConfigProvider_Load(t *testing.T) {
 		unsettable: "unsettable",
 	}
 
-	err := configprovider.NewConfigProvider().
+	err := provider.NewConfigProvider().
 		FromSource(source).
 		WithDecrypter(&mockDecrypter{Value: "decrypted"}).
 		Load(&config)

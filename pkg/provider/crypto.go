@@ -1,4 +1,4 @@
-package configprovider
+package provider
 
 import (
 	"fmt"
@@ -10,6 +10,11 @@ type Encrypter interface {
 
 type Decrypter interface {
 	Decrypt(cipherText string) (string, error)
+}
+
+type CryptoAlgorithm interface {
+	Decrypter
+	Encrypter
 }
 
 func decryptValue(key string, value string, decrypter Decrypter) (string, error) {

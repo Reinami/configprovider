@@ -114,10 +114,10 @@ go install github.com/Reinami/configprovider/cmd/lockbox@latest
 
 ```bash
 # Encrypt
-lockbox encrypt --c=aesgcm mysecret "mysecretvalue"
+lockbox encrypt --c=aesgcm mysecret mysecretvalue
 
 # Decrypt
-lockbox decrypt --c=aesgcm mysecret "ciphertext"
+lockbox decrypt --c=aesgcm mysecret ciphertext
 
 # Show available algorithms
 lockbox --list-algorithms

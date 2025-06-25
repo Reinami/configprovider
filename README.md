@@ -1,11 +1,11 @@
-# 🛠️ configprovider
+# configprovider
 
 A flexible, tag-based configuration loader for Go.  
 Supports `.properties` files, encrypted fields, and custom source + crypto integrations.
 
 ---
 
-## ✨ Features
+## Features
 
 - Struct-based configuration loading
 - currently has `.properties` file support
@@ -15,7 +15,7 @@ Supports `.properties` files, encrypted fields, and custom source + crypto integ
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Define Your Config Struct
 
@@ -43,7 +43,7 @@ if err != nil {
 
 ---
 
-## 🧩 Custom Source
+## Custom Source
 
 Implement the `configprovider.Source` interface:
 
@@ -64,7 +64,7 @@ configprovider.New().FromSource(&MyCustomSource{})
 
 ---
 
-## 🔐 Custom Encrypter / Decrypter
+## Custom Encrypter / Decrypter
 
 Create a type that implements:
 
@@ -100,17 +100,17 @@ configprovider.New().
 
 ---
 
-## 🔐 `lockbox` CLI (optional)
+## `lockbox` CLI (optional)
 
 A helper CLI to encrypt/decrypt values using the same algorithms used by `configprovider`.
 
-### 📦 Install (Go required)
+### Install (Go required)
 
 ```bash
 go install github.com/Reinami/configprovider/cmd/lockbox@latest
 ```
 
-### 🔧 Usage
+### Usage
 
 ```bash
 # Encrypt
@@ -125,7 +125,7 @@ lockbox --list-algorithms
 
 ---
 
-## 🔏 Field Tags
+## Field Tags
 
 | Tag           | Description                                             |
 |---------------|---------------------------------------------------------|
@@ -136,7 +136,7 @@ lockbox --list-algorithms
 
 ---
 
-## 📄 License
+## License
 
 MIT License. See [LICENSE](./LICENSE).
 
